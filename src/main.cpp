@@ -1,3 +1,5 @@
+/*
+
 #include <Arduino.h>
 
 // Basic demo for readings from Adafruit BNO08x
@@ -137,3 +139,5 @@ void setReports(void) {
   }
 
 }
+
+*/
