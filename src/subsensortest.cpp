@@ -94,7 +94,7 @@ break;
         Serial.println(game_rotation_counter);
         Serial.println("The acc counter in one second:"); 
         Serial.println(acc_counter);
-  
+    
         // Resetting counters
         magnetic_counter = 0;
         game_rotation_counter = 0;

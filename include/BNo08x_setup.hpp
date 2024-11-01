@@ -19,6 +19,7 @@
 #include <sh2.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 extern sh2_SensorValue_t sensorValue;
 extern Adafruit_BNO08x bno08x;

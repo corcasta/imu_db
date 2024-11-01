@@ -3,42 +3,62 @@
 #include <ROS_data_struct.hpp>
 #include <dataloss.hpp> 
 
-    DataSensor3 magField;
-    DataSensor3 linAcc;
-    DataSensor4 gameRot;
+DataSensor3 magField;
+DataSensor3 linAcc;
+DataSensor4 gameRot;
+int n = 0;
+
+bool linearAccRead = false;
+bool gameRotRead = false;
 
 void setup() {
     serial_begin();
-    setReports(SH2_LINEAR_ACCELERATION, 20000); // 200 HZ
-    setReports(SH2_MAGNETIC_FIELD_CALIBRATED, 20000); // 50 HZ
-    setReports(SH2_GAME_ROTATION_VECTOR, 20000); // 200 HZ (5000)
+    setReports(SH2_LINEAR_ACCELERATION, 20000); // 200 Hz
+    setReports(SH2_GAME_ROTATION_VECTOR, 20000); // 200 Hz
 
     sensorData["LinearAcc"] = DataSensor3{};
     sensorData["MagField"] = DataSensor3{};
     sensorData["GameRot"] = DataSensor4{};
+
+    delay(1000); // Wait for sensor initialization
 }
 
-
 void loop() {
-    run_freq_test(false);
-
-
-/*
+    
     if (bno08x.getSensorEvent(&sensorValue)) {
+        // Capture the current timestamp in microseconds
+        unsigned long timestampMicros = micros();
 
-    switch (sensorValue.sensorId){
-        case SH2_MAGNETIC_FIELD_CALIBRATED:
-            updateDataSensor3("MagField", LIN_x, LIN_y, LIN_z, 16234589);
-            std::cout << LIN_x + LIN_y + LIN_z;
-        case SH2_LINEAR_ACCELERATION:
-            updateDataSensor3("LinearAcc", MAG_x, MAG_y, MAG_z, 16234589);
-        case SH2_GAME_ROTATION_VECTOR:
-            updateDataSensor4("GameRot", GAME_i, GAME_j, GAME_k, GAME_real, 16234567);
-      }
+        switch (sensorValue.sensorId) {
+            case SH2_LINEAR_ACCELERATION:
+                Serial.printf("%d", n);
+                Serial.println("L");
+                Serial.printf("T: %lu us\n", timestampMicros);
+                Serial.printf("x = %.6f\n", sensorValue.un.linearAcceleration.x);
+                Serial.printf("y = %.6f\n", sensorValue.un.linearAcceleration.y);
+                Serial.printf("z = %.6f\n", sensorValue.un.linearAcceleration.z);
+                linearAccRead = true;
+                break;
+
+            case SH2_GAME_ROTATION_VECTOR:
+                Serial.printf("%d", n);
+                Serial.println("Q");
+                Serial.printf("i = %.8f\n", sensorValue.un.gameRotationVector.i);
+                Serial.printf("j = %.8f\n", sensorValue.un.gameRotationVector.j);
+                Serial.printf("k = %.8f\n", sensorValue.un.gameRotationVector.k);
+                Serial.printf("r = %.8f\n", sensorValue.un.gameRotationVector.real);
+                gameRotRead = true;
+                break;
+        }
+
+        // If both sensors have been read, increment the frame counter and reset flags
+        if (linearAccRead && gameRotRead) {
+            n++;                  // Increment counter only after both sensors are read
+            linearAccRead = false; // Reset flags for the next frame
+            gameRotRead = false;
+        }
     }
-    */
-}    
-
+}
 
 
 
